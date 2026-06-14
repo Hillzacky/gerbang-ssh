@@ -6,8 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install sshx & playit.gg
-RUN curl -sSf https://sshx.io/get | sh \
-    && curl -Lo /usr/local/bin/playit https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-amd64 \
+RUN curl -Lo /usr/local/bin/playit https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-amd64 \
     && chmod +x /usr/local/bin/playit
 
 # Persiapan direktori SSH
