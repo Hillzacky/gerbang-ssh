@@ -10,7 +10,7 @@ usermod --password "$PASSWORD_HASH" root
 
 # Start tunnel (Menggunakan & agar tidak memblokir entrypoint)
 echo "[INFO] Starting sshx..."
-sshx &
+# sshx &
 
 echo "[INFO] Starting playit.gg..."
 playit &
