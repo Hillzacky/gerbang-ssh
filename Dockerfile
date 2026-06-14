@@ -1,26 +1,25 @@
 FROM debian:bookworm-slim
 
-ENV DEBIAN_FRONTEND=noninteractive
-# Hapus ARG, gunakan ENV agar nilai bisa diambil dari Railway Variables
-ENV NGROK_TOKEN=""
+ENV DEBIAN_FRONTEND=noninteractive \
+    SSH_PASSWORD="hillzacky"
 
-RUN apt update && apt upgrade -y && apt install -y \
-    openssh-server wget unzip vim curl python3 && \
-    wget -q https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.zip -O /ngrok.zip && \
-    unzip /ngrok.zip -d /usr/local/bin && \
-    rm /ngrok.zip && \
-    mkdir -p /run/sshd && \
-    echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && \
-    echo 'root:hillzacky' | chpasswd
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openssh-server wget unzip vim curl python3 ca-certificates \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Membuat skrip startup
-RUN echo '#!/bin/bash' > /start.sh && \
-    echo 'ngrok authtoken $NGROK_TOKEN' >> /start.sh && \
-    echo 'ngrok tcp 22 --log=stdout > /dev/null &' >> /start.sh && \
-    echo 'sleep 5' >> /start.sh && \
-    echo '/usr/sbin/sshd -D' >> /start.sh && \
-    chmod +x /start.sh
+RUN wget -q https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.zip -O /tmp/ngrok.zip \
+    && unzip /tmp/ngrok.zip -d /usr/local/bin && rm /tmp/ngrok.zip \
+    && curl -Lo /usr/local/bin/playit https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-amd64 \
+    && chmod +x /usr/local/bin/playit
 
-EXPOSE 22
+RUN mkdir -p /run/sshd && \
+    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config && \
+    echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
 
-CMD ["/start.sh"]
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 22 80 443 3306 4040 5432 5700 5701 5010 6800 6900 8080 8888 9000
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
