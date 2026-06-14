@@ -1,8 +1,8 @@
 FROM debian:bookworm-slim
 
-# Install dependencies (Tanpa cache untuk mempercepat build)
+# Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    openssh-server curl python3 ca-certificates \
+    openssh-server curl python3 ca-certificates openssl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install sshx & playit.gg
@@ -10,11 +10,13 @@ RUN curl -sSf https://sshx.io/get | sh \
     && curl -Lo /usr/local/bin/playit https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-amd64 \
     && chmod +x /usr/local/bin/playit
 
-# Konfigurasi SSH dasar
-RUN mkdir -p /run/sshd && \
-    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+# Persiapan direktori SSH
+RUN mkdir -p /run/sshd && chmod 755 /run/sshd
 
-# Copy entrypoint
+# Setup SSH Config
+RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config \
+    && echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
+
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
