@@ -1,6 +1,6 @@
 # Gerbang ssh
 ### Deploy
-1. Buat [Akun Railway](https://railway.app?referralCode=dG01iI) atau gunakan akun yang ada.
+1. Buat [Akun Railway](https://railway.app?referralCode=z6vfKI) atau gunakan akun yang ada.
 
 2. Buat atau login ke [Akun Ngrok](https://dashboard.ngrok.com/).
 
@@ -8,7 +8,7 @@
 
 Note: Satu akun ngrok hanya dapat menggunakan 1 agen aktif, jika Anda ingin menjalankan beberapa agen, Anda harus mengupgrade akun Anda.
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/BzFWCH?referralCode=dG01iI)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/BzFWCH?referralCode=z6vfKI)
 
 ```env
 NGROK_TOKEN=
