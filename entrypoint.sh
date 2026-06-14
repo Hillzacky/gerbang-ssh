@@ -1,19 +1,20 @@
 #!/bin/bash
 
-# Setup password root dinamis
-echo "root:${SSH_PASSWORD:-hillzacky}" | chpasswd
+# Mengatur password root tanpa ketergantungan PAM
+# Menggunakan openssl untuk men-generate hash yang kompatibel
+PASSWORD_HASH=$(openssl passwd -6 "${SSH_PASSWORD:-hillzacky}")
+usermod --password "$PASSWORD_HASH" root
 
 # Start SSH
 /usr/sbin/sshd &
 
-# Start sshx (Akses Browser - Sangat Stabil)
+# Start tunnel (Menggunakan & agar tidak memblokir entrypoint)
 echo "[INFO] Starting sshx..."
 sshx &
 
-# Start playit.gg (Akses Terminal/Putty)
 echo "[INFO] Starting playit.gg..."
 playit &
 
-# Menjaga container tetap hidup selamanya
-echo "[INFO] Container running. Check logs for sshx/playit links."
+# Menjaga container tetap aktif
+echo "[INFO] Services started successfully."
 tail -f /dev/null
